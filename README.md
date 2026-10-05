@@ -15,6 +15,7 @@ A **skill** here is a folder containing a `SKILL.md`: a focused, battle-tested s
 | Skill | What it does |
 |---|---|
 | [`creator-site-github-pages`](skills/creator-site-github-pages) | Build and deploy a personal creator/portfolio site (Home, Portfolio, Blog, Video, Contact tabs) that live-fetches your blog and YouTube content, hosted free on GitHub Pages with your own domain. |
+| [`shorts-maker`](skills/shorts-maker) | Turn a long tutorial/talking video into several clean vertical YouTube Shorts (no burned-in captions) plus a matching glossy thumbnail for each clip. |
 
 More skills get added here over time as they're built and proven out. Check back, or watch the repo.
 

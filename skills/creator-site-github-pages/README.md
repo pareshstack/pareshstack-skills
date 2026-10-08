@@ -7,6 +7,8 @@ Build and deploy a personal creator/portfolio site — Home, Portfolio, Blog, Vi
 - Builds a single-page site with proper tab navigation (no endless scrolling)
 - Live-fetches your latest blog posts (Blogger feed, no API key)
 - Live-fetches your latest long-form YouTube videos, Shorts excluded, via a scheduled GitHub Action (no API key, no fragile third-party CORS proxy)
+- Applies an accessibility and design quality bar (44 px tap targets, readable text, light and dark mode)
+- Optionally adds a Skills tab that groups your published Claude skills into sections with preview images, straight from a GitHub repo
 - Walks through deploying it on GitHub Pages with a custom domain, including the exact DNS records you need at your registrar
 
 ## Why this exists

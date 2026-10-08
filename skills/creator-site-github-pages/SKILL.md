@@ -1,7 +1,7 @@
 ---
 name: creator-site-github-pages
 category: Web and publishing
-description: Build and deploy a personal creator/portfolio site (tabs like Home, Portfolio, Blog, Video, Contact) that live-fetches the person's blog and YouTube content, hosted free on GitHub Pages with their own custom domain. Use when someone wants a personal site, link-hub, or creator homepage tied to their own blog/YouTube/socials.
+description: Build and deploy a personal creator/portfolio site (tabs like Home, Portfolio, Blog, Video, Contact) that live-fetches the person's blog and YouTube content, hosted free on GitHub Pages with their own custom domain, accessible and light/dark aware, with an optional skills showcase. Use when someone wants a personal site, link-hub, or creator homepage tied to their own blog/YouTube/socials.
 ---
 
 # Creator site on GitHub Pages
@@ -81,6 +81,36 @@ Load it with a dynamically-created `<script>` tag; `myCallback(feed)` receives `
 6. After DNS is added, verify with a DNS-over-HTTPS lookup (e.g. `https://dns.google/resolve?name=<domain>&type=A`) rather than guessing — confirms propagation without waiting blindly.
 7. Expect an SSL hostname-mismatch error on `https://` for a while right after DNS first resolves — that's GitHub still issuing the certificate (can take hours), not a misconfiguration. `http://` or fetching the `<user>.github.io` URL (which redirects to the custom domain once the CNAME file is live) are both good ways to confirm the setup worked before HTTPS finishes provisioning.
 
-## 5. Iterating after launch
+## 5. Quality bar (check before calling it done)
+
+Reviewing a finished site against Apple's Human Interface Guidelines turned up the same handful of issues. Build these in from the start instead of fixing them later:
+
+- **Tap targets ≥ 44 px tall** on nav links, buttons and filter chips (`min-height:44px` plus horizontal padding). Chips that aren't links shouldn't look clickable.
+- **Small text ≥ 14 px.** Chips, footer, dates, eyebrow labels and mono nav text drift down to 11–12 px; keep body ~17 px and everything else 14 px or more.
+- **Light and dark both.** Define colours as CSS variables on `:root` (including the translucent nav background and the text-on-accent colour) and override them under `@media (prefers-color-scheme: light)`. Darken the accent for light mode and check it: white on the accent should be ≥ 4.5:1 (an amber like `#e2a63b` needs to become roughly `#9a5f00`). Don't add a manual toggle.
+- **Accent restraint.** Spend the accent colour on the primary button and one or two brand touches. Mark the active nav tab with a neutral fill and an accent underline rather than a solid accent pill.
+- **Phone nav.** On narrow widths make the nav one horizontally scrolling row (`flex-wrap:nowrap; overflow-x:auto`, hide the scrollbar) instead of wrapping onto two lines.
+- **Labels.** Icon-only links get `aria-label`. An image inside a labelled button (for example a video thumbnail in a `role="button"` with an `aria-label`) correctly has an empty `alt`; don't flag or "fix" those. Keep visible `:focus-visible` styles and a `prefers-reduced-motion` guard.
+- **Verify, don't assume.** Preview locally (`python3 -m http.server`), emulate a 375 px viewport in both colour schemes, and check computed sizes and `documentElement.scrollWidth === innerWidth` rather than judging from a screenshot.
+
+## 6. Optional: a Skills tab that builds itself from a repo
+
+If the person publishes Claude skills in a public repo (`skills/<name>/SKILL.md`), the site can list them with no build step by reading the repo from the browser: `GET https://api.github.com/repos/<owner>/<repo>/contents/skills` for the folders, then each `SKILL.md` from `raw.githubusercontent.com` and parse its frontmatter.
+
+- **Sections.** Add a one-line `category: <Section name>` to each `SKILL.md` frontmatter. Group cards by it under a mono eyebrow heading, in a fixed preferred order with unknown categories alphabetical and "Other" last. Add filter chips (All plus one per section) as real `<button aria-pressed>` elements that toggle the `hidden` attribute on sections; give `.section[hidden]{display:none}` its own rule so it wins over `display:grid`.
+- **Preview images.** Put a 1280×720 `preview.svg` (or PNG) in each skill folder and show it 16:9 at the top of the card from `raw.githubusercontent.com/<owner>/<repo>/main/skills/<name>/preview.svg`. SVG needs no image tooling: generate it from a small script in the site's colours with a simple illustration of what the skill does, its name and a one-line tagline. Use system font stacks (Georgia, Menlo) because web fonts don't load inside an `<img>` SVG. If the image 404s, remove its `src` so the card still shows a neutral tile.
+- **Descriptions** in frontmatter are long trigger text; clamp them to ~4 lines with `-webkit-line-clamp`.
+- **Caveat:** unauthenticated GitHub API calls are limited to 60 per hour per visitor IP, so a shared office network could see the "couldn't load" fallback. Keep the fallback link to the repo, and if it matters, generate a `skills.json` with a scheduled Action (same pattern as `videos.json`) and fetch that same-origin instead.
+
+## 7. Pushing from an assistant session
+
+HTTPS pushes fail with `Password authentication is not supported`, and a personal access token pasted into a terminal prompt is easy to paste in the wrong place (it ends up in shell history and chat). Prefer the browser device flow:
+
+1. With the person's OK, `brew install gh` (a download, so ask first).
+2. `gh auth login --web --hostname github.com --git-protocol https --skip-ssh-key`: the person opens `https://github.com/login/device` and enters the one-time code it prints. No token ever passes through the assistant.
+3. `gh auth setup-git`, then plain `git push` works. Verify the result with `git push` output (`<old>..<new> main -> main`) and a cache-busted `curl` of the live page for a marker string.
+4. If a token was exposed anyway, tell the person to delete it at `github.com/settings/tokens`.
+
+## 8. Iterating after launch
 
 Treat this as a living repo, not a one-off file: small requests ("only show 5 videos", "remove Shorts", "swap the photo") are each a short edit-commit-push-redeploy cycle, with the GitHub Action re-triggered manually (`workflow_dispatch`) when the fetch logic itself changes so the fix is visible immediately rather than on the next schedule.

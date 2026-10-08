@@ -1,5 +1,6 @@
 ---
 name: dataverse-solution-builder
+category: Dynamics 365 and Power Platform
 description: "Configure a Microsoft Dynamics 365 / Dataverse environment from a design document — build tables, columns, relationships, plug-ins, a model-driven app, views, forms, a dashboard and demo data via scripted Dataverse Web API calls."
 ---
 

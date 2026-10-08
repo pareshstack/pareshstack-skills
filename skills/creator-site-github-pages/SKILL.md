@@ -1,5 +1,6 @@
 ---
 name: creator-site-github-pages
+category: Web and publishing
 description: Build and deploy a personal creator/portfolio site (tabs like Home, Portfolio, Blog, Video, Contact) that live-fetches the person's blog and YouTube content, hosted free on GitHub Pages with their own custom domain. Use when someone wants a personal site, link-hub, or creator homepage tied to their own blog/YouTube/socials.
 ---
 

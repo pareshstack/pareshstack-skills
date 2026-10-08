@@ -1,5 +1,6 @@
 ---
 name: shorts-maker
+category: Video and Shorts
 description: "Turn a long tutorial/talking video into several clean vertical YouTube Shorts (1080x1920, no burned-in captions) AND a matching glossy vertical thumbnail for each clip. Names files descriptively, e.g. 'Clip-Explaining the thing nobody gets.mp4'. Use whenever the user names a video to make Shorts/clips from, e.g. 'make shorts from sample2.mp4'."
 ---
 

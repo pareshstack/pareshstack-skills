@@ -1,5 +1,6 @@
 ---
 name: youtube-shorts
+category: Video and Shorts
 description: "Turn a long tutorial/talking video into several captioned vertical YouTube Shorts. Use when the user names a video to make Shorts/clips from, e.g. 'make shorts from sample2.mp4'."
 ---
 
